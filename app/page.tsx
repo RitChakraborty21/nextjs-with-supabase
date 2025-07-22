@@ -12,7 +12,7 @@ export default async function Home() {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.getClaims();
       if (data?.claims) {
-        redirect("/home");
+        redirect("/home"); 
       }
       if (error) throw error;
     
