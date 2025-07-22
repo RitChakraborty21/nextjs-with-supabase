@@ -8,7 +8,7 @@ export async function AuthButton() {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
   const { data:basicDetails ,error :er2} = await supabase.from('basic_details').select('*').eq('uid',user?.sub).is('effective_end', null);
-  var uname = null;
+  let uname = null;
   if(basicDetails && basicDetails.length > 0) {
     const basicDetail = basicDetails[0];
     //console.log(basicDetail.fname+" "+basicDetail.lname)
@@ -21,7 +21,8 @@ export async function AuthButton() {
     if(basicDetail.lname != null || basicDetail.lname != undefined){
       uname=uname+" "+basicDetail.lname;
     }
-  } 
+  }
+  if (er2) throw er2;
 
   return user ? (
     <div className="flex items-center gap-4">

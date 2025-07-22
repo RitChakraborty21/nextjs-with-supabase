@@ -6,7 +6,17 @@ import { redirect } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-export default function Home() {
+import { createClient } from "@/lib/supabase/server";
+
+export default async function Home() {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getClaims();
+      if (data?.claims) {
+        redirect("/home");
+      }
+      if (error) throw error;
+    
+    
   return (
     <main className="min-h-screen flex flex-col items-center">
       <div className="flex-1 w-full flex flex-col gap-20 items-center">
