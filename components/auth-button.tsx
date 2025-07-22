@@ -5,15 +5,27 @@ import { LogoutButton } from "./logout-button";
 
 export async function AuthButton() {
   const supabase = await createClient();
-
-  // You can also use getUser() which will be slower.
   const { data } = await supabase.auth.getClaims();
-
   const user = data?.claims;
+  const { data:basicDetails ,error :er2} = await supabase.from('basic_details').select('*').eq('uid',user?.sub).is('effective_end', null);
+  var uname = null;
+  if(basicDetails && basicDetails.length > 0) {
+    const basicDetail = basicDetails[0];
+    //console.log(basicDetail.fname+" "+basicDetail.lname)
+    if(basicDetail.fname != null || basicDetail.fname != undefined){
+      uname = basicDetail.fname ;
+    }
+    if(basicDetail.mname != null || basicDetail.mname != undefined){
+      uname=uname+" "+basicDetail.mname;
+    }
+    if(basicDetail.lname != null || basicDetail.lname != undefined){
+      uname=uname+" "+basicDetail.lname;
+    }
+  } 
 
   return user ? (
     <div className="flex items-center gap-4">
-      Hey, {user.email}!
+      <Link href="/profile/update-basicdetails">Hey, {uname?uname:user.email}!</Link>
       <LogoutButton />
     </div>
   ) : (
