@@ -7,7 +7,7 @@ export async function AuthButton() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
-  const { data:basicDetails ,error :er2} = await supabase.from('basic_details').select('*').eq('uid',user?.sub).is('effective_end', null);
+  const { data:basicDetails } = await supabase.from('basic_details').select('*').eq('uid',user?.sub).is('effective_end', null);
   let uname = null;
   if(basicDetails && basicDetails.length > 0) {
     const basicDetail = basicDetails[0];
@@ -22,11 +22,10 @@ export async function AuthButton() {
       uname=uname+" "+basicDetail.lname;
     }
   }
-  if (er2) throw er2;
 
   return user ? (
     <div className="flex items-center gap-4">
-      <Link href="/profile/update-basicdetails">Hey, {uname?uname:user.email}!</Link>
+      <Link href="/profile/update-basicdetails">Hey, {uname?uname:user.email}!</Link> 
       <LogoutButton />
     </div>
   ) : (
